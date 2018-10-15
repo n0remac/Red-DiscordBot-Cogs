@@ -31,13 +31,14 @@ class BankCog:
 
 	@commands.command()
 	async def show(self, name):
-		amt=self.centralBank.getAccount(name).getAmount()
+		amt=self.centralBank.getAmount(name)
 		await self.bot.say(amt)
 
 
 class Bank:
 	def __init__(self):
 		self.AccountList=[]
+		self.currency="$"
 
 	def createAccount(self, name):
 		self.AccountList.append(Account(name))
@@ -50,10 +51,13 @@ class Bank:
 		return self.AccountList
 
 	def deposit(self, name, num):
-		self.getAccount(name).add(num)
+		self.getAccount(name).deposit(num)
 	
 	def withdraw(self, name, num):
-		return self.getAccount(name).take(num)
+		return self.getAccount(name).withdraw(num)
+
+	def getAmount(self, name):
+		return self.currency + str(self.getAccount(name).getAmount())
 
 
 class Account:
@@ -61,11 +65,11 @@ class Account:
 		self.amount=0
 		self.name=name
 
-	def take(self, num):
+	def withdraw(self, num):
 		self.amount-=int(num)
 		return num
 
-	def add(self, num):
+	def deposit(self, num):
 		self.amount+=int(num)
 
 	def getAmount(self):
